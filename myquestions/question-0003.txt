@@ -1,0 +1,40 @@
+El Problema:
+En sistemas de recomendación basados en filtrado colaborativo, una técnica
+fundamental es la Descomposición en Valores Singulares Truncada (TruncatedSVD),
+que permite extraer factores latentes de una matriz usuario-ítem dispersa.
+
+Tu Misión:
+Escribe una función llamada factorizar_matriz_usuarios(X, n_componentes, umbral_reconstruccion)
+que realice lo siguientes pasos:
+
+1. Reciba:
+   - X (np.ndarray): Matriz 2D de forma (n_usuarios, n_items) con valores
+     numéricos no negativos (puede contener ceros representando ítems no valorados).
+   - n_componentes (int): Número de factores latentes a extraer.
+   - umbral_reconstruccion (float): Umbral para clasificar si la reconstrucción
+     es "buena" (el error es bajo).
+
+2. Aplique TruncatedSVD de sklearn.decomposition con n_components=n_componentes
+   y random_state=42 sobre la matriz X.
+
+3. Obtenga la matriz X reconstruida usando inverse_transform sobre la
+   transformación obtenida.
+
+4. Calcule el Error de Reconstrucción como el RMSE (Root Mean Squared Error)
+   entre X original y X reconstruida, usando numpy.
+
+5. Genere un array booleano llamado usuarios_bien_representados donde cada
+   elemento indica si el RMSE fila a fila de ese usuario es menor o igual
+   al umbral_reconstruccion (True = bien representado, False = no).
+
+6. Devuelva una tupla con tres elementos:
+   - X_reconstruida (np.ndarray): La matriz reconstruida de la misma forma que X.
+   - rmse_global (float): RMSE global redondeado a 6 decimales.
+   - usuarios_bien_representados (np.ndarray): Array booleano de forma (n_usuarios,).
+
+Restricciones:
+- Librerías permitidas: numpy, sklearn.
+- No modificar la matriz X original.
+
+Retorno:
+Una tupla (X_reconstruida, rmse_global, usuarios_bien_representados).

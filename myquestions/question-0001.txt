@@ -1,0 +1,35 @@
+El Problema:
+Trabajas en el área de análisis de redes sociales. Recibes un DataFrame con
+interacciones entre usuarios: cada fila representa un mensaje enviado de un
+usuario a otro, con una columna de timestamp y una columna de sentimiento
+numérico (positivo, negativo, neutro representado como 1, -1, 0).
+
+Necesitas construir un resumen de red ponderado: para cada par ordenado
+(emisor → receptor) que haya tenido al menos una interacción, calcular la
+frecuencia de mensajes, el sentimiento promedio y una "intensidad de relación"
+definida como frecuencia * abs(sentimiento_promedio + 0.5).
+
+Tu Misión:
+Escribe una función llamada construir_red_ponderada(df, emisor_col,
+receptor_col, sentimiento_col) que realice lo siguiente:
+
+1. Agrupe las filas por (emisor_col, receptor_col) usando pandas groupby.
+2. Para cada par, calcule:
+   - frecuencia: número de interacciones (count de filas).
+   - sentimiento_promedio: media del sentimiento_col (redondeado a 4 decimales).
+3. Cree una columna llamada intensidad_relacion calculada como:
+   frecuencia * abs(sentimiento_promedio + 0.5)
+   redondeada a 4 decimales.
+4. Filtre y conserve solo los pares donde la frecuencia sea >= 2.
+5. Ordene el resultado por intensidad_relacion en orden descendente.
+6. Reinicie el índice del DataFrame resultante (drop=True).
+7. Devuelva el DataFrame resultante con columnas:
+   [emisor_col, receptor_col, 'frecuencia', 'sentimiento_promedio', 'intensidad_relacion']
+
+Restricciones:
+- Librerías permitidas: pandas, numpy.
+- Usar operaciones vectorizadas; evitar loops explícitos.
+- No modificar el DataFrame original.
+
+Retorno:
+Un pd.DataFrame con las columnas indicadas.

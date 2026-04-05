@@ -1,0 +1,34 @@
+El Problema:
+En bioinformática, un experimento de microarray produce mediciones de expresión
+génica para múltiples genes en múltiples muestras. A menudo, los datos tienen
+una distribución altamente sesgada (muchos valores bajos, pocos muy altos).
+Una práctica estándar es aplicar una transformación logarítmica y luego
+normalizar por cuantiles para hacer las distribuciones comparables entre muestras.
+
+Tu Misión:
+Escribe una función llamada normalizar_expresion_cuantiles(df) que realice
+los siguientes pasos exactamente en este orden:
+
+1. Reciba un DataFrame df donde cada columna representa una muestra y cada
+   fila un gen. Los valores son conteos de expresión (enteros no negativos).
+2. Aplique una transformación log2(x + 1) a todos los valores del DataFrame
+   usando numpy (para evitar log(0)).
+3. Realice la normalización por cuantiles:
+   a. Para cada columna, obtenga el orden de ranking de sus valores
+      (usa df.rank(method='average') de pandas sobre el DataFrame transformado).
+   b. Calcule el valor de referencia para cada rango como la media de los valores
+      ya transformados cuando se ordenan todas las columnas juntas (es decir,
+      el promedio por fila del DataFrame ordenado por columna).
+   c. Reemplace cada valor de cada columna por el valor de referencia
+      correspondiente a su rango.
+4. Devuelva el DataFrame normalizado con los mismos índices y nombres de columna
+   que el DataFrame original, con valores redondeados a 6 decimales.
+
+Restricciones:
+- Librerías permitidas: pandas, numpy.
+- No usar sklearn ni ninguna librería externa adicional.
+- No modificar el DataFrame original.
+
+Retorno:
+Un pd.DataFrame con la misma forma que el original, con los valores
+normalizados por cuantiles.

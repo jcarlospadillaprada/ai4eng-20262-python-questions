@@ -1,0 +1,52 @@
+El Problema:
+En el análisis de series de tiempo de ventas, una técnica útil es la
+descomposición estacional: separar la tendencia, la estacionalidad y el
+residuo de una serie temporal. Después de descomponer, quieres evaluar
+si los residuos se distribuyen aproximadamente de forma normal usando
+el Test de Shapiro-Wilk.
+
+Sin embargo, por restricciones de implementación, debes hacer todo esto
+manualmente usando solo pandas y numpy, sin usar statsmodels ni scipy.
+
+Tu Misión:
+Escribe una función llamada descomponer_serie_ventas(df, fecha_col, valor_col,
+periodo) que realice lo siguiente:
+
+1. Convierta fecha_col a datetime y ordene el DataFrame por fecha_col
+   de forma ascendente (reiniciando el índice).
+
+2. Calcule la TENDENCIA como la media móvil de la columna valor_col con
+   una ventana de tamaño periodo, centrada (center=True). Los valores NaN
+   en los bordes de la tendencia se deben rellenar con ffill() y luego bfill().
+
+3. Calcule la COMPONENTE ESTACIONAL:
+   a. Reste la tendencia a valor_col para obtener la serie sin tendencia.
+   b. Agrupe los valores sin tendencia por su posición dentro del periodo
+      (usa el operador módulo: índice_fila % periodo).
+   c. Calcule la media de cada grupo. Estos son los factores estacionales.
+   d. Cree la columna estacionalidad asignando a cada fila el factor
+      estacional correspondiente a su posición (índice % periodo).
+
+4. Calcule el RESIDUO como:
+   residuo = valor_col - tendencia - estacionalidad
+
+5. Calcule las siguientes estadísticas del residuo (usando numpy):
+   - media_residuo: media del residuo, redondeada a 6 decimales.
+   - std_residuo: desviación estándar del residuo, redondeada a 6 decimales.
+   - es_aprox_normal: booleano True si abs(media_residuo) < 0.05 * std_residuo,
+     indicando que la media es muy pequeña respecto a la dispersión
+     (señal de que el residuo está centrado en cero).
+
+6. Devuelva una tupla con dos elementos:
+   - df_descompuesto (pd.DataFrame): El DataFrame con las columnas originales
+     más las nuevas columnas: 'tendencia', 'estacionalidad', 'residuo'.
+   - dict_stats (dict): Diccionario con claves 'media_residuo', 'std_residuo',
+     'es_aprox_normal'.
+
+Restricciones:
+- Librerías permitidas: pandas, numpy.
+- No usar statsmodels, scipy ni ninguna función de descomposición automática.
+- Evitar loops explícitos donde sea posible.
+
+Retorno:
+Una tupla (df_descompuesto, dict_stats).
