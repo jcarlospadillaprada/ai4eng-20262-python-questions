@@ -1,0 +1,61 @@
+DIAGNÓSTICO - answer-0195.py
+Autor: Juan Carlos Padilla
+Correo: jcarlos.padilla@udea.edu.co
+
+======================================================================
+PROBLEMA: usecase generator error para la pregunta 0195
+(pipeline_mixto_clasificacion - autor: jilberthalzate-blip)
+======================================================================
+
+El evaluador reporta:
+  [RESULT] 0195: X usecase generator error: Execution error:
+  pipeline_mixto_clasificacion() missing 3 required positional
+  arguments: 'df', 'target_col', and 'test_size'
+
+CAUSA RAÍZ: Error en el generador de casos de uso, no en la solución.
+----------------------------------------------------------------------
+
+El generador (question-0003-usecase-generator.py) tiene la siguiente
+estructura de retorno en su última línea (línea 24 del generador):
+
+    return {"target_col": "target", "test_size": ts}, df
+
+Esto retorna una TUPLA de dos elementos:
+  - Elemento 1 (input):  diccionario con claves "target_col" y "test_size"
+  - Elemento 2 (output): el DataFrame df
+
+El problema es que el DataFrame df NO está incluido dentro del
+diccionario de inputs. El evaluador toma el diccionario de inputs
+y llama la función como:
+
+    pipeline_mixto_clasificacion(**{"target_col": "target", "test_size": ts})
+
+Es decir, llama la función SIN pasar el argumento "df", lo cual
+provoca el error "missing 3 required positional arguments".
+
+El generador debería haber retornado:
+
+    return {"df": df, "target_col": "target", "test_size": ts}, output_esperado
+
+donde output_esperado sería el diccionario con las métricas calculadas.
+Esto es consistente con el patrón usado en el ejemplo del enunciado
+(generar_caso_de_uso_preparar_datos), donde el input contiene TODOS
+los argumentos de la función incluyendo el DataFrame.
+
+VERIFICACIÓN EN MI SOLUCIÓN (answer-0195.py):
+----------------------------------------------------------------------
+
+Mi función en answer-0195.py está correctamente definida con la firma
+esperada (líneas 1-5 del archivo):
+
+    def pipeline_mixto_clasificacion(df=None, target_col='target', test_size=0.2):
+
+La función acepta los tres argumentos requeridos por la pregunta.
+Cuando se llama correctamente (pasando df, target_col y test_size),
+la función ejecuta sin errores y retorna el diccionario con las
+métricas 'accuracy', 'f1_macro' y 'roc_auc' redondeadas a 4 decimales,
+tal como lo pide el enunciado.
+
+El error reportado por el evaluador es exclusivamente consecuencia
+del bug en el generador del compañero (ausencia del DataFrame en el
+diccionario de inputs), y no refleja ningún defecto en mi implementación.
